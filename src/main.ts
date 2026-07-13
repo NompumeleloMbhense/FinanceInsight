@@ -5,14 +5,19 @@ import { renderExpenseList } from "./ui/expenseList";
 import { renderDashboard } from "./ui/dashboard";
 import { renderCategoryBreakdown } from "./ui/categoryBreakdown";
 import { categories } from "./models/Category";
+import { saveExpenses, loadExpenses } from "./services/StorageService";
 
-const expenses: Expense[] = []; // Array to hold all expenses
+
+const expenses: Expense[] = loadExpenses(); // Array to hold all expenses
 let selectedCategory = "All"; // Variable to hold the selected category for filtering
 
 const app = document.querySelector<HTMLDivElement>("#app")!;
 
+// Function to add a new expense to the expenses array and update the UI accordingly
 function addExpense(expense: Expense) {
   expenses.push(expense);
+
+  saveExpenses(expenses);
 
   updateDashboard();
   updateExpenseList();
@@ -113,6 +118,8 @@ function deleteExpense(id: number): void {
   if (index === -1) return;
 
   expenses.splice(index, 1);
+
+  saveExpenses(expenses);
 
   updateDashboard();
   updateExpenseList();
