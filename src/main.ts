@@ -1,15 +1,23 @@
 import "./style.css";
 import type { Expense } from "./models/Expense";
+import type { Budget } from "./models/Budget";
 import { renderExpenseForm } from "./ui/expenseForm";
+import { renderBudgetForm } from "./ui/budgetForm";
 import { renderExpenseList } from "./ui/expenseList";
 import { renderDashboard } from "./ui/dashboard";
 import { renderCategoryBreakdown } from "./ui/categoryBreakdown";
 import { categories } from "./models/Category";
-import { saveExpenses, loadExpenses } from "./services/StorageService";
-
+import {
+  saveExpenses,
+  loadExpenses,
+  loadBudget,
+  saveBudget as saveBudgetToStorage,
+} from "./services/StorageService";
 
 const expenses: Expense[] = loadExpenses(); // Array to hold all expenses
 let selectedCategory = "All"; // Variable to hold the selected category for filtering
+
+let budget: Budget = loadBudget();
 
 const app = document.querySelector<HTMLDivElement>("#app")!;
 
@@ -17,13 +25,15 @@ const app = document.querySelector<HTMLDivElement>("#app")!;
 function addExpense(expense: Expense) {
   expenses.push(expense);
 
-  saveExpenses(expenses);
+  refreshApp();
+}
 
-  updateDashboard();
-  updateExpenseList();
-  updateCategoryBreakdown();
+function saveBudget(newBudget: Budget): void {
+  budget = newBudget;
 
-  console.log("All expenses: ", expenses);
+  saveBudgetToStorage(budget);
+
+  refreshApp();
 }
 
 app.innerHTML = `
@@ -35,6 +45,9 @@ app.innerHTML = `
 
     <section id="dashboard">
         <h2>Dashboard Summary</h2>
+    </section>
+
+    <section id="budget-form">
     </section>
 
     <section id="expense-form">
@@ -51,14 +64,14 @@ app.innerHTML = `
       <select id="category-filter">
           <option value="All">All</option>
           ${categories
-              .map(
-                  category => `
+            .map(
+              (category) => `
                       <option value="${category}">
                           ${category}
                       </option>
-                  `
-              )
-              .join("")}
+                  `,
+            )
+            .join("")}
       </select>
 
     </section>
@@ -69,7 +82,6 @@ app.innerHTML = `
 
   </main>
 `;
-
 
 // Query the necessary sections from the DOM for later use
 const dashboardSection = document.querySelector<HTMLElement>("#dashboard")!;
@@ -82,7 +94,7 @@ const categoryBreakdownSection = document.querySelector<HTMLElement>(
 )!;
 const categoryFilter =
   document.querySelector<HTMLSelectElement>("#category-filter")!;
-
+const budgetFormSection = document.querySelector<HTMLElement>("#budget-form")!;
 
 // When the user changes the dropdown, remember the selected category then
 // update the expense list to show only expenses from that category
@@ -91,7 +103,6 @@ categoryFilter.addEventListener("change", () => {
 
   updateExpenseList();
 });
-
 
 function updateExpenseList() {
   const filteredExpenses =
@@ -103,8 +114,11 @@ function updateExpenseList() {
 }
 
 function updateDashboard() {
+  dashboardSection.innerHTML = renderDashboard(expenses, budget);
+}
 
-  dashboardSection.innerHTML = renderDashboard(expenses);
+function updateBudgetForm(): void {
+  renderBudgetForm(budgetFormSection, budget, saveBudget);
 }
 
 function updateCategoryBreakdown() {
@@ -119,11 +133,7 @@ function deleteExpense(id: number): void {
 
   expenses.splice(index, 1);
 
-  saveExpenses(expenses);
-
-  updateDashboard();
-  updateExpenseList();
-  updateCategoryBreakdown();
+  refreshApp();
 }
 
 // Initial rendering of the expense form, dashboard, expense list, and category breakdown
@@ -131,3 +141,13 @@ renderExpenseForm(expenseFormSection, addExpense);
 updateDashboard();
 updateExpenseList();
 updateCategoryBreakdown();
+renderBudgetForm(budgetFormSection, budget, saveBudget);
+
+function refreshApp(): void {
+  saveExpenses(expenses);
+  
+  updateDashboard();
+  updateExpenseList();
+  updateCategoryBreakdown();
+  updateBudgetForm();
+}
