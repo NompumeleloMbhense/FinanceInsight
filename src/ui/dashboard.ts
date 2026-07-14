@@ -7,21 +7,46 @@ export function renderDashboard(expenses: Expense[], budget: Budget): string {
   const remainingBudget = budget.amount - totalSpent;
 
   return `
-     <h2>Dashboard Summary</h2>
+<h2>Dashboard Summary</h2>
 
-        <p>
-            Monthly Budget:
+<div class="dashboard-grid">
+
+    <div class="summary-card">
+
+        <span class="summary-title">
+            Monthly Budget
+        </span>
+
+        <span class="summary-value">
             R${budget.amount.toFixed(2)}
-        </p>
+        </span>
 
-        <p>
-            Total Spent:
+    </div>
+
+    <div class="summary-card">
+
+        <span class="summary-title">
+            Total Spent
+        </span>
+
+        <span class="summary-value">
             R${totalSpent.toFixed(2)}
-        </p>
+        </span>
 
-        <p>
-            Remaining Budget:
+    </div>
+
+    <div class="summary-card">
+
+        <span class="summary-title">
+            Remaining
+        </span>
+
+        <span class="summary-value">
             R${remainingBudget.toFixed(2)}
-        </p>
-    `;
+        </span>
+
+    </div>
+
+</div>
+`;
 }

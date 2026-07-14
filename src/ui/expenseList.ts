@@ -22,17 +22,35 @@ export function renderExpenseList(
         ${expenses
           .map(
             (expense) => `
-            <li>
+           <li class="expense-item">
 
-                <span>
-                    ${expense.description} - R${expense.amount.toFixed(2)}
-                </span>
+              <div>
 
-                <button
-                    class="delete-expense"
-                    data-id="${expense.id}">
-                    Delete
-                </button>
+                  <strong>
+                      ${expense.description}
+                  </strong>
+
+                  <small>
+                      ${expense.category}
+                  </small>
+
+              </div>
+
+              <div class="expense-right">
+
+                  <span class="expense-amount">
+                      R${expense.amount.toFixed(2)}
+                  </span>
+
+                  <button
+                      class="delete-expense"
+                      data-id="${expense.id}">
+
+                      Delete
+
+                  </button>
+
+              </div>
 
             </li>
         `,

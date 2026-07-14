@@ -39,48 +39,54 @@ function saveBudget(newBudget: Budget): void {
 app.innerHTML = `
   <main class="container">
 
-    <header>
+    <header class="page-header">
         <h1>Finance Insight</h1>
-    </header>   
+        <p>Know where every rand goes.</p>
+    </header>
 
-    <section id="dashboard">
-        <h2>Dashboard Summary</h2>
-    </section>
+    <section id="dashboard" class="card"></section>
 
-    <section id="budget-form">
-    </section>
+    <div class="two-column">
 
-    <section id="expense-form">
-    </section>
+        <section id="budget-form" class="card"></section>
 
-    <section id="category-breakdown">
-        <h2>Category Breakdown</h2>
-    </section>
+        <section id="expense-form" class="card"></section>
 
-    <section id="expense-filter">
+    </div>
 
-      <label for="category-filter">Filter by Category</label>
+    <div class="two-column">
 
-      <select id="category-filter">
-          <option value="All">All</option>
-          ${categories
-            .map(
-              (category) => `
-                      <option value="${category}">
-                          ${category}
-                      </option>
-                  `,
-            )
-            .join("")}
-      </select>
+        <section id="category-breakdown" class="card"></section>
 
-    </section>
+        <section id="expense-filter" class="card">
 
-    <section id="expense-list">
-        <h2>Expense List</h2>
-    </section>
+            <h2>Filter Expenses</h2>
 
-  </main>
+            <label for="category-filter">
+                Category
+            </label>
+
+            <select id="category-filter">
+
+                <option value="All">All</option>
+
+                ${categories
+                    .map(category => `
+                        <option value="${category}">
+                            ${category}
+                        </option>
+                    `)
+                    .join("")}
+
+            </select>
+
+        </section>
+
+    </div>
+
+    <section id="expense-list" class="card"></section>
+
+</main>
 `;
 
 // Query the necessary sections from the DOM for later use

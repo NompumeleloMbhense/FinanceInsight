@@ -30,9 +30,15 @@ export function renderCategoryBreakdown(
             ${Object.entries(totals)
               .map(
                 ([category, total]) => `
-                        <li>
+                        <li class="category-item">
 
-                            ${category}: R${total.toFixed(2)}
+                            <span>
+                                ${category}
+                            </span>
+
+                            <strong>
+                                R${total.toFixed(2)}
+                            </strong>
 
                         </li>
                     `,
