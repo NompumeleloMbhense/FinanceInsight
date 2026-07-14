@@ -5,48 +5,53 @@ import type { Expense } from "../models/Expense";
 export function renderDashboard(expenses: Expense[], budget: Budget): string {
   const totalSpent = expenses.reduce((sum, expense) => sum + expense.amount, 0);
   const remainingBudget = budget.amount - totalSpent;
+  const percentageSpent =
+    budget.amount > 0 ? (totalSpent / budget.amount) * 100 : 0;
 
   return `
-<h2>Dashboard Summary</h2>
+        <h2>Dashboard Summary</h2>
 
-<div class="dashboard-grid">
+        <div class="dashboard-grid">
 
-    <div class="summary-card">
+            <div class="summary-card">
+                <span class="summary-title">Monthly Budget</span>
+                <span class="summary-value">
+                    R${budget.amount.toFixed(2)}
+                </span>
+            </div>
 
-        <span class="summary-title">
-            Monthly Budget
-        </span>
+            <div class="summary-card">
+                <span class="summary-title">Total Spent</span>
+                <span class="summary-value">
+                    R${totalSpent.toFixed(2)}
+                </span>
+            </div>
 
-        <span class="summary-value">
-            R${budget.amount.toFixed(2)}
-        </span>
+            <div class="summary-card">
+                <span class="summary-title">Remaining Budget</span>
+                <span class="summary-value">
+                    R${remainingBudget.toFixed(2)}
+                </span>
+            </div>
 
-    </div>
+        </div>
 
-    <div class="summary-card">
+        <div class="progress-section">
 
-        <span class="summary-title">
-            Total Spent
-        </span>
+            <div class="progress-header">
+                <span>Budget Used</span>
+                <span>${percentageSpent.toFixed(0)}%</span>
+            </div>
 
-        <span class="summary-value">
-            R${totalSpent.toFixed(2)}
-        </span>
+            <div class="progress-bar">
 
-    </div>
+                <div
+                    class="progress-fill"
+                    style="width: ${Math.min(percentageSpent, 100)}%;"
+                ></div>
 
-    <div class="summary-card">
+            </div>
 
-        <span class="summary-title">
-            Remaining
-        </span>
-
-        <span class="summary-value">
-            R${remainingBudget.toFixed(2)}
-        </span>
-
-    </div>
-
-</div>
-`;
+        </div>
+    `;
 }
