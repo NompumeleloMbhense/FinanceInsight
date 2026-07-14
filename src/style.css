@@ -126,6 +126,31 @@ body {
     transition: width .3s ease;
 }
 
+.budget-status {
+    margin-top: 20px;
+    padding: 14px;
+    border-radius: 10px;
+    font-weight: 600;
+}
+
+.status-good {
+    background: #E8F5E9;
+    color: #2E7D32;
+    border-left: 5px solid #2E7D32;
+}
+
+.status-warning {
+    background: #FFF8E1;
+    color: #F57F17;
+    border-left: 5px solid #F57F17;
+}
+
+.status-danger {
+    background: #FDECEA;
+    color: #C62828;
+    border-left: 5px solid #C62828;
+}
+
 input,
 select {
   width: 100%;

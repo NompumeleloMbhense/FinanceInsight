@@ -8,6 +8,22 @@ export function renderDashboard(expenses: Expense[], budget: Budget): string {
   const percentageSpent =
     budget.amount > 0 ? (totalSpent / budget.amount) * 100 : 0;
 
+  let budgetStatus = "";
+  let budgetStatusClass = "";
+
+  if (percentageSpent < 80) {
+    budgetStatus = "🟢 Great! You're managing your budget well.";
+    budgetStatusClass = "status-good";
+  } else if (percentageSpent <= 100) {
+    budgetStatus = "🟡 Careful! You're approaching your budget limit.";
+    budgetStatusClass = "status-warning";
+  } else {
+    const overBudget = totalSpent - budget.amount;
+
+    budgetStatus = `🔴 You've exceeded your budget by R${overBudget.toFixed(2)}.`;
+    budgetStatusClass = "status-danger";
+  }
+
   return `
         <h2>Dashboard Summary</h2>
 
@@ -52,6 +68,10 @@ export function renderDashboard(expenses: Expense[], budget: Budget): string {
 
             </div>
 
+        </div>
+
+        <div class="budget-status ${budgetStatusClass}">
+            ${budgetStatus}
         </div>
     `;
 }
