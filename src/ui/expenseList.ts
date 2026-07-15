@@ -1,11 +1,28 @@
 import type { Expense } from "../models/Expense";
 
+
+function highlightMatch(text:string, searchText: string): string {
+  
+  if(searchText.trim() === ""){
+    return text;
+  }
+
+  const regex = new RegExp(`(${searchText})`, "gi");
+
+  return text.replace(
+    regex, 
+    `<mark>$1</mark>`
+  );
+}
+
+
 // Renders the expense list in the given container and sets up delete functionality
 export function renderExpenseList(
   container: HTMLElement,
   expenses: Expense[],
   onDeleteExpense: (id: number) => void,
   emptyMessage: string,
+  searchText: string,
 ): void {
 
   if (expenses.length === 0) {
@@ -29,7 +46,10 @@ export function renderExpenseList(
               <div>
 
                   <strong>
-                      ${expense.description}
+                    ${highlightMatch(
+                      expense.description,
+                      searchText,
+                    )}
                   </strong>
 
                   <small>

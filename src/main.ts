@@ -159,7 +159,10 @@ function updateExpenseList() {
       ? "No expenses yet" 
       : "No matching expenses found";
 
-  renderExpenseList(expenseListSection, filteredExpenses, deleteExpense, emptyMessage);
+
+  // Render the filtered expense list in the expenseListSection with the delete functionality
+  // and appropriate empty message based on the current state of expenses and filters
+  renderExpenseList(expenseListSection, filteredExpenses, deleteExpense, emptyMessage, searchText);
 }
 
 
@@ -168,15 +171,18 @@ function updateDashboard() {
   dashboardSection.innerHTML = renderDashboard(expenses, budget);
 }
 
+
 // Function to update the budget form with the latest budget
 function updateBudgetForm(): void {
   renderBudgetForm(budgetFormSection, budget, saveBudget);
 }
 
+
 // Function to update the category breakdown with the latest expenses
 function updateCategoryBreakdown() {
   renderCategoryBreakdown(categoryBreakdownSection, expenses);
 }
+
 
 // Function to delete an expense by its id and update the UI accordingly
 function deleteExpense(id: number): void {
@@ -189,6 +195,7 @@ function deleteExpense(id: number): void {
 
   refreshApp();
 }
+
 
 // Initial rendering of the expense form, dashboard, expense list, and category breakdown
 renderExpenseForm(expenseFormSection, addExpense);
