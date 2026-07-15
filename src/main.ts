@@ -154,7 +154,12 @@ function updateExpenseList() {
     return matchesCategory && matchesSearch;
   });
 
-  renderExpenseList(expenseListSection, filteredExpenses, deleteExpense);
+  const emptyMessage = 
+      expenses.length === 0 
+      ? "No expenses yet" 
+      : "No matching expenses found";
+
+  renderExpenseList(expenseListSection, filteredExpenses, deleteExpense, emptyMessage);
 }
 
 

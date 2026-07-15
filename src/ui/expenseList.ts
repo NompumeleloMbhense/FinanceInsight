@@ -5,11 +5,13 @@ export function renderExpenseList(
   container: HTMLElement,
   expenses: Expense[],
   onDeleteExpense: (id: number) => void,
+  emptyMessage: string,
 ): void {
+
   if (expenses.length === 0) {
     container.innerHTML = `
           <h2>Expense List</h2>
-          <p>No expenses yet.</p>
+          <p>${emptyMessage}</p>
       `;
     return;
   }
