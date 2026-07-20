@@ -13,6 +13,7 @@ import {
   loadBudget,
   saveBudget as saveBudgetToStorage,
 } from "./services/StorageService";
+import { renderMonthlyReport } from "./ui/monthlyReport";
 
 
 
@@ -62,6 +63,8 @@ app.innerHTML = `
     <div class="two-column">
 
         <section id="category-breakdown" class="card"></section>
+
+        <section id="monthly-report" class="card"></section>
 
         <section id="expense-search" class="card">
 
@@ -124,6 +127,8 @@ const budgetFormSection = document.querySelector<HTMLElement>("#budget-form")!;
 const searchInput = document.querySelector<HTMLInputElement>(
   "#expense-search-input",
 )!;
+const monthlyReportSection = document.querySelector<HTMLElement>("#monthly-report")!;
+
 
 
 // When the user changes the dropdown, remember the selected category then
@@ -140,6 +145,8 @@ searchInput.addEventListener("input", () => {
   updateExpenseList();
 });
 
+
+// ----------------------------------- UI Update Functions ---------------------------------------------//
 
 // Function to update the expense list based on the selected category and search text
 function updateExpenseList() {
@@ -196,6 +203,10 @@ function deleteExpense(id: number): void {
   refreshApp();
 }
 
+function updateMonthlyReport(){
+  renderMonthlyReport(monthlyReportSection, expenses);
+}
+
 
 // Initial rendering of the expense form, dashboard, expense list, and category breakdown
 renderExpenseForm(expenseFormSection, addExpense);
@@ -203,6 +214,7 @@ updateDashboard();
 updateExpenseList();
 updateCategoryBreakdown();
 renderBudgetForm(budgetFormSection, budget, saveBudget);
+updateMonthlyReport();
 
 // Function to refresh the app by saving expenses and updating all relevant sections of the UI
 function refreshApp(): void {
@@ -212,4 +224,5 @@ function refreshApp(): void {
   updateExpenseList();
   updateCategoryBreakdown();
   updateBudgetForm();
+  updateMonthlyReport();
 }
