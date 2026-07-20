@@ -43,15 +43,17 @@ function saveBudget(newBudget: Budget): void {
 }
 
 app.innerHTML = `
-  <main class="container">
+<main class="container">
 
     <header class="page-header">
         <h1>Finance Insight</h1>
         <p>Know where every rand goes.</p>
     </header>
 
+    <!-- Dashboard -->
     <section id="dashboard" class="card"></section>
 
+    <!-- Budget + Expense Form -->
     <div class="two-column">
 
         <section id="budget-form" class="card"></section>
@@ -60,23 +62,27 @@ app.innerHTML = `
 
     </div>
 
+    <!-- Category Breakdown + Search -->
     <div class="two-column">
 
         <section id="category-breakdown" class="card"></section>
 
-        <section id="monthly-report" class="card"></section>
-
         <section id="expense-search" class="card">
 
-          <h2>Search Expenses</h2>
+            <h2>Search Expenses</h2>
 
-          <input
-              id="expense-search-input"
-              type="text"
-              placeholder="Search description..."
-          />
+            <input
+                id="expense-search-input"
+                type="text"
+                placeholder="Search description..."
+            />
 
         </section>
+
+    </div>
+
+    <!-- Filter + Monthly Report -->
+    <div class="two-column">
 
         <section id="expense-filter" class="card">
 
@@ -91,21 +97,24 @@ app.innerHTML = `
                 <option value="All">All</option>
 
                 ${categories
-                  .map(
-                    (category) => `
-                        <option value="${category}">
-                            ${category}
-                        </option>
-                    `,
-                  )
-                  .join("")}
+                    .map(
+                        (category) => `
+                            <option value="${category}">
+                                ${category}
+                            </option>
+                        `,
+                    )
+                    .join("")}
 
             </select>
 
         </section>
 
+        <section id="monthly-report" class="card"></section>
+
     </div>
 
+    <!-- Expense List -->
     <section id="expense-list" class="card"></section>
 
 </main>

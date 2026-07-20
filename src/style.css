@@ -1,46 +1,38 @@
 :root {
   --background: #f7f6f2;
-
   --surface: white;
 
   --primary: #c2921a;
-
   --primary-dark: #8a6511;
 
   --text: #222;
-
   --text-light: #666;
 
   --border: #e4e4e4;
-
   --danger: #b42318;
 
   --shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
-
   --radius: 16px;
 }
 
+/* ==========================
+   Base
+========================== */
+
 body {
   margin: 0;
-
   background: var(--background);
-
-  font-family:
-    Segoe UI,
-    sans-serif;
-
+  font-family: Segoe UI, sans-serif;
   color: var(--text);
 }
 
 .container {
   width: min(1200px, 95%);
-
   margin: 40px auto;
 }
 
 .page-header {
   text-align: center;
-
   margin-bottom: 40px;
 }
 
@@ -50,159 +42,148 @@ body {
 
 .card {
   background: var(--surface);
-
   border-radius: var(--radius);
-
   padding: 24px;
-
   box-shadow: var(--shadow);
 }
 
+/* ==========================
+   Layout
+========================== */
+
 .two-column {
   display: grid;
-
   grid-template-columns: 1fr 1fr;
-
   gap: 24px;
-
   margin: 24px 0;
 }
 
+/* ==========================
+   Dashboard
+========================== */
+
 .dashboard-grid {
   display: grid;
-
   grid-template-columns: repeat(3, 1fr);
-
   gap: 20px;
 }
 
 .summary-card {
   background: #fff9ea;
-
   border-left: 6px solid var(--primary);
-
   border-radius: 12px;
-
   padding: 20px;
 }
 
 .summary-title {
   display: block;
-
   color: var(--text-light);
-
   margin-bottom: 10px;
 }
 
 .summary-value {
   font-size: 2rem;
-
   font-weight: bold;
 }
 
+/* ==========================
+   Budget Progress
+========================== */
+
 .progress-section {
-    margin-top: 30px;
+  margin-top: 30px;
 }
 
 .progress-header {
-    display: flex;
-    justify-content: space-between;
-    margin-bottom: 10px;
-    font-weight: 600;
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 10px;
+  font-weight: 600;
 }
 
 .progress-bar {
-    width: 100%;
-    height: 16px;
-    background: #ececec;
-    border-radius: 999px;
-    overflow: hidden;
+  width: 100%;
+  height: 16px;
+  background: #ececec;
+  border-radius: 999px;
+  overflow: hidden;
 }
 
 .progress-fill {
-    height: 100%;
-    background: #C2921A;
-    border-radius: 999px;
-    transition: width .3s ease;
+  height: 100%;
+  background: var(--primary);
+  border-radius: 999px;
+  transition: width 0.3s ease;
 }
 
 .budget-status {
-    margin-top: 20px;
-    padding: 14px;
-    border-radius: 10px;
-    font-weight: 600;
+  margin-top: 20px;
+  padding: 14px;
+  border-radius: 10px;
+  font-weight: 600;
 }
 
 .status-good {
-    background: #E8F5E9;
-    color: #2E7D32;
-    border-left: 5px solid #2E7D32;
+  background: #e8f5e9;
+  color: #2e7d32;
+  border-left: 5px solid #2e7d32;
 }
 
 .status-warning {
-    background: #FFF8E1;
-    color: #F57F17;
-    border-left: 5px solid #F57F17;
+  background: #fff8e1;
+  color: #f57f17;
+  border-left: 5px solid #f57f17;
 }
 
 .status-danger {
-    background: #FDECEA;
-    color: #C62828;
-    border-left: 5px solid #C62828;
+  background: #fdecea;
+  color: #c62828;
+  border-left: 5px solid #c62828;
 }
+
+/* ==========================
+   Forms
+========================== */
 
 input,
 select {
   width: 100%;
-
   padding: 12px;
-
   margin-bottom: 16px;
-
   border-radius: 10px;
-
   border: 1px solid var(--border);
-
   box-sizing: border-box;
 }
 
 button {
   background: var(--primary);
-
   color: white;
-
   border: none;
-
   padding: 12px 18px;
-
   border-radius: 10px;
-
   cursor: pointer;
-
-  transition: 0.2s;
+  transition: 0.2s ease;
 }
 
 button:hover {
   background: var(--primary-dark);
 }
 
+/* ==========================
+   Expense List
+========================== */
+
 .expense-item {
   display: flex;
-
   justify-content: space-between;
-
   align-items: center;
-
   padding: 18px 0;
-
   border-bottom: 1px solid var(--border);
 }
 
 .expense-right {
   display: flex;
-
   align-items: center;
-
   gap: 16px;
 }
 
@@ -210,21 +191,95 @@ button:hover {
   font-weight: bold;
 }
 
+/* ==========================
+   Category Breakdown
+========================== */
+
 .category-item {
   display: flex;
-
   justify-content: space-between;
-
   padding: 12px 0;
-
   border-bottom: 1px solid var(--border);
 }
 
+.category-item:last-child {
+  border-bottom: none;
+}
+
+/* ==========================
+   Monthly Report
+========================== */
+
+#monthly-report h2 {
+  margin-top: 0;
+  margin-bottom: 1.5rem;
+}
+
+.monthly-report {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.report-filter {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.report-section {
+  padding: 1rem;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.report-section:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow);
+}
+
+.report-section h3 {
+  margin-top: 0;
+  margin-bottom: 12px;
+}
+
+.report-total {
+  font-size: 2rem;
+  font-weight: bold;
+  color: var(--primary);
+}
+
+.report-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.report-list li {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.report-list li:last-child {
+  border-bottom: none;
+}
+
+/* ==========================
+   Messages
+========================== */
+
 .error-message {
   color: var(--danger);
-
   margin: 10px 0;
 }
+
+/* ==========================
+   Responsive
+========================== */
 
 @media (max-width: 900px) {
   .two-column {
