@@ -1,30 +1,26 @@
 import type { Expense } from "../models/Expense";
 
 
-function highlightMatch(text:string, searchText: string): string {
-  
-  if(searchText.trim() === ""){
+function highlightMatch(text: string, searchText: string): string {
+  if (searchText.trim() === "") {
     return text;
   }
 
   const regex = new RegExp(`(${searchText})`, "gi");
 
-  return text.replace(
-    regex, 
-    `<mark>$1</mark>`
-  );
+  return text.replace(regex, `<mark>$1</mark>`);
 }
-
 
 // Renders the expense list in the given container and sets up delete functionality
 export function renderExpenseList(
   container: HTMLElement,
   expenses: Expense[],
+  onEditExpense: (id: number) => void,
   onDeleteExpense: (id: number) => void,
+  editingExpenseId: number | null,
   emptyMessage: string,
   searchText: string,
 ): void {
-
   if (expenses.length === 0) {
     container.innerHTML = `
           <h2>Expense List</h2>
@@ -41,20 +37,29 @@ export function renderExpenseList(
         ${expenses
           .map(
             (expense) => `
-           <li class="expense-item">
+           <li class="expense-item ${editingExpenseId === expense.id ? "editing" : ""}">
 
               <div>
 
-                  <strong>
-                    ${highlightMatch(
-                      expense.description,
-                      searchText,
-                    )}
-                  </strong>
+                <strong>
+                    ${highlightMatch(expense.description, searchText)}
+                </strong>
 
-                  <small>
-                      ${expense.category}
-                  </small>
+                <br>
+
+                <small>
+                    ${expense.category}
+                </small>
+
+                ${
+                  editingExpenseId === expense.id
+                    ? `
+                    <div class="editing-label">
+                        ✏ Editing...
+                    </div>
+                    `
+                    : ""
+                }
 
               </div>
 
@@ -64,12 +69,18 @@ export function renderExpenseList(
                       R${expense.amount.toFixed(2)}
                   </span>
 
-                  <button
-                      class="delete-expense"
-                      data-id="${expense.id}">
-
-                      Delete
-
+                  <button 
+                    class="edit-expense" 
+                    data-id="${expense.id}">
+                    
+                    Edit 
+                  </button>
+                  
+                  <button 
+                    class="delete-expense" 
+                    data-id="${expense.id}">
+                    
+                    Delete
                   </button>
 
               </div>
@@ -82,8 +93,19 @@ export function renderExpenseList(
     </ul>
 `;
 
+
+// Event listeners for edit and delete buttons
   const deleteButtons =
     container.querySelectorAll<HTMLButtonElement>(".delete-expense");
+  const editButtons =
+    container.querySelectorAll<HTMLButtonElement>(".edit-expense");
+
+  editButtons.forEach((button) => {
+    button.addEventListener("click", () => {
+      const id = Number(button.dataset.id);
+      onEditExpense(id);
+    });
+  });
 
   deleteButtons.forEach((button) => {
     button.addEventListener("click", () => {

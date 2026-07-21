@@ -15,29 +15,53 @@ import {
 } from "./services/StorageService";
 import { renderMonthlyReport } from "./ui/monthlyReport";
 
-
-
 const expenses: Expense[] = loadExpenses(); // Array to hold all expenses
 let selectedCategory = "All"; // Variable to hold the selected category for filtering
 let searchText = "";
 
 let budget: Budget = loadBudget();
 
+let editingExpenseId: number | null = null;
+
 const app = document.querySelector<HTMLDivElement>("#app")!;
 
-// Function to add a new expense to the expenses array and update the UI accordingly
-function addExpense(expense: Expense) {
-  expenses.push(expense);
+// Function to save a new expense or update an existing one based on the editingExpenseId
+function saveExpense(expense: Expense): void {
+  if (editingExpenseId === null) {
+    expenses.push(expense);
+  } else {
+    const index = expenses.findIndex(
+      (expense) => expense.id === editingExpenseId,
+    );
+
+    if (index !== -1) {
+      expenses[index] = expense;
+    }
+
+    editingExpenseId = null;
+  }
 
   refreshApp();
 }
 
+// Function to edit an existing expense by its id and render the expense form with the expense data
+function editExpense(id: number): void {
+  editingExpenseId = id;
+
+  refreshApp();
+}
 
 // Function to save the new budget and update the UI accordingly
 function saveBudget(newBudget: Budget): void {
   budget = newBudget;
 
   saveBudgetToStorage(budget);
+
+  refreshApp();
+}
+
+function cancelEdit(): void {
+  editingExpenseId = null;
 
   refreshApp();
 }
@@ -97,14 +121,14 @@ app.innerHTML = `
                 <option value="All">All</option>
 
                 ${categories
-                    .map(
-                        (category) => `
+                  .map(
+                    (category) => `
                             <option value="${category}">
                                 ${category}
                             </option>
                         `,
-                    )
-                    .join("")}
+                  )
+                  .join("")}
 
             </select>
 
@@ -119,7 +143,6 @@ app.innerHTML = `
 
 </main>
 `;
-
 
 // Query the necessary sections from the DOM for later use
 const dashboardSection = document.querySelector<HTMLElement>("#dashboard")!;
@@ -136,9 +159,8 @@ const budgetFormSection = document.querySelector<HTMLElement>("#budget-form")!;
 const searchInput = document.querySelector<HTMLInputElement>(
   "#expense-search-input",
 )!;
-const monthlyReportSection = document.querySelector<HTMLElement>("#monthly-report")!;
-
-
+const monthlyReportSection =
+  document.querySelector<HTMLElement>("#monthly-report")!;
 
 // When the user changes the dropdown, remember the selected category then
 // update the expense list to show only expenses from that category
@@ -153,7 +175,6 @@ searchInput.addEventListener("input", () => {
 
   updateExpenseList();
 });
-
 
 // ----------------------------------- UI Update Functions ---------------------------------------------//
 
@@ -170,35 +191,36 @@ function updateExpenseList() {
     return matchesCategory && matchesSearch;
   });
 
-  const emptyMessage = 
-      expenses.length === 0 
-      ? "No expenses yet" 
-      : "No matching expenses found";
+  const emptyMessage =
+    expenses.length === 0 ? "No expenses yet" : "No matching expenses found";
 
-
-  // Render the filtered expense list in the expenseListSection with the delete functionality
-  // and appropriate empty message based on the current state of expenses and filters
-  renderExpenseList(expenseListSection, filteredExpenses, deleteExpense, emptyMessage, searchText);
+  // Render the filtered expense list in the expenseListSection to
+  // show only expenses that match the selected category and search text
+  renderExpenseList(
+    expenseListSection,
+    filteredExpenses,
+    editExpense,
+    deleteExpense,
+    editingExpenseId,
+    emptyMessage,
+    searchText,
+  );
 }
-
 
 // Function to update the dashboard with the latest expenses and budget
 function updateDashboard() {
   dashboardSection.innerHTML = renderDashboard(expenses, budget);
 }
 
-
 // Function to update the budget form with the latest budget
 function updateBudgetForm(): void {
   renderBudgetForm(budgetFormSection, budget, saveBudget);
 }
 
-
 // Function to update the category breakdown with the latest expenses
 function updateCategoryBreakdown() {
   renderCategoryBreakdown(categoryBreakdownSection, expenses);
 }
-
 
 // Function to delete an expense by its id and update the UI accordingly
 function deleteExpense(id: number): void {
@@ -212,24 +234,27 @@ function deleteExpense(id: number): void {
   refreshApp();
 }
 
-function updateMonthlyReport(){
+// Function to update the monthly report with the latest expenses
+function updateMonthlyReport() {
   renderMonthlyReport(monthlyReportSection, expenses);
 }
 
+// Function to update the expense form based on the current editingExpenseId
+function updateExpenseForm(): void {
+  const expense = expenses.find((expense) => expense.id === editingExpenseId);
+
+  renderExpenseForm(expenseFormSection, saveExpense, expense, cancelEdit);
+}
 
 // Initial rendering of the expense form, dashboard, expense list, and category breakdown
-renderExpenseForm(expenseFormSection, addExpense);
-updateDashboard();
-updateExpenseList();
-updateCategoryBreakdown();
-renderBudgetForm(budgetFormSection, budget, saveBudget);
-updateMonthlyReport();
+refreshApp();
 
 // Function to refresh the app by saving expenses and updating all relevant sections of the UI
 function refreshApp(): void {
   saveExpenses(expenses);
 
   updateDashboard();
+  updateExpenseForm();
   updateExpenseList();
   updateCategoryBreakdown();
   updateBudgetForm();

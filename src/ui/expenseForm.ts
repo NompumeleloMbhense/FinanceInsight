@@ -1,38 +1,48 @@
 import { categories } from "../models/Category";
 import type { Expense } from "../models/Expense";
 
+
 // Renders the expense form and handles form submission
 export function renderExpenseForm(
-  container: HTMLElement,
-  onAddExpense: (expense: Expense) => void,
+    container: HTMLElement,
+    onSaveExpense: (expense: Expense) => void,
+    expense?: Expense,
+    onCancelEdit?: () => void
 ): void {
 
   // Create the form HTML structure
   container.innerHTML = `
-        <h2>Add Expense</h2>
+        <h2>${expense ? "Edit Expense" : "Add Expense"}</h2>
 
         <form id="expense-form-form">
 
             <label for="description">Description</label>
+
             <input
                 id="description"
                 type="text"
                 placeholder="Enter description"
+                value="${expense?.description ?? ""}"
             />
 
             <label for="category">Category</label>
 
-            <select id="category">
-                 ${categories
-                    .map(
-                      category => `
-                          <option value="${category}">
-                              ${category}
-                          </option>
-                        `
-                      )
-                    .join("")}
-            </select>
+              <select id="category">
+
+                ${categories
+                  .map(
+                    (category) => `
+                        <option
+                            value="${category}"
+                            ${expense?.category === category ? "selected" : ""}
+                        >
+                            ${category}
+                        </option>
+                    `,
+                  )
+                  .join("")}
+
+              </select>
 
             <label for="amount">Amount</label>
 
@@ -40,6 +50,7 @@ export function renderExpenseForm(
                 id="amount"
                 type="number"
                 placeholder="0.00"
+                value="${expense?.amount ?? ""}"
             />
 
             <label for="date">Date</label>
@@ -47,10 +58,28 @@ export function renderExpenseForm(
             <input
                 id="date"
                 type="date"
+                value="${expense?.date ?? ""}"
             />
 
             <p id="error-message" class="error-message"></p>
-            <button type="submit">Add Expense</button>
+
+            <div class="form-actions"> 
+                <button type="submit">
+                    ${expense ? "Update Expense" : "Add Expense"}
+                </button>
+                
+                ${
+                  expense ? ` 
+                  <button 
+                      type="button" 
+                      id="cancel-edit" 
+                      class="secondary-button">
+                      
+                      Cancel 
+                  </button> 
+                  ` : "" 
+                }
+            </div>
 
         </form>
     `;
@@ -58,6 +87,7 @@ export function renderExpenseForm(
 
   // Add event listener for form submission
   const form = container.querySelector<HTMLFormElement>("#expense-form-form")!;
+
   const errorMessage =
     container.querySelector<HTMLParagraphElement>("#error-message")!;
 
@@ -93,17 +123,21 @@ export function renderExpenseForm(
     }
 
     // Create a new expense object
-    const expense: Expense = {
-      id: Date.now(),
+    const newExpense: Expense = {
+      id: expense?.id ?? Date.now(),
       description,
       category: category as any,
       amount,
       date,
     };
 
-    onAddExpense(expense);
+    onSaveExpense(newExpense);
 
-    errorMessage.textContent = "";
     form.reset();
   });
+
+  const cancelButton = 
+    container.querySelector<HTMLButtonElement>("#cancel-edit");
+
+  cancelButton?.addEventListener("click", () => { onCancelEdit?.(); });
 }
