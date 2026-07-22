@@ -1,15 +1,13 @@
 import { categories } from "../models/Category";
 import type { Expense } from "../models/Expense";
 
-
 // Renders the expense form and handles form submission
 export function renderExpenseForm(
-    container: HTMLElement,
-    onSaveExpense: (expense: Expense) => void,
-    expense?: Expense,
-    onCancelEdit?: () => void
+  container: HTMLElement,
+  onSaveExpense: (expense: Expense) => void,
+  expense?: Expense,
+  onCancelEdit?: () => void,
 ): void {
-
   // Create the form HTML structure
   container.innerHTML = `
         <h2>${expense ? "Edit Expense" : "Add Expense"}</h2>
@@ -60,6 +58,51 @@ export function renderExpenseForm(
                 type="date"
                 value="${expense?.date ?? ""}"
             />
+             
+            <label class="checkbox-label">
+                <input 
+                    id="isRecurring"
+                    type="checkbox"
+                    ${expense?.isRecurring ? "checked" : ""}
+                  />
+            Recurring Expense
+            </label>
+
+            <div 
+              id="recurring-options"
+              class="${expense?.isRecurring ? "" : "hidden"}"
+            >
+            
+            <label for="frequency">Frequency</label>
+            
+            <select id="frequency">
+
+                  <option 
+                    value="Weekly"
+                    ${expense?.recurringFrequency === "Weekly" ? "selected" : ""}
+                  >
+                  Weekly
+                  </option>
+                  
+                  <option
+                      value="Monthly"
+                      ${expense?.recurringFrequency === "Monthly" ? "selected" : ""}
+                  >
+                  Monthly
+                  </option>
+
+                  <option
+                      value="Yearly"
+                      ${expense?.recurringFrequency === "Yearly" ? "selected" : ""}
+                  >
+                  Yearly
+                  </option>
+
+             </select>
+
+              </div>
+
+         
 
             <p id="error-message" class="error-message"></p>
 
@@ -69,7 +112,8 @@ export function renderExpenseForm(
                 </button>
                 
                 ${
-                  expense ? ` 
+                  expense
+                    ? ` 
                   <button 
                       type="button" 
                       id="cancel-edit" 
@@ -77,32 +121,49 @@ export function renderExpenseForm(
                       
                       Cancel 
                   </button> 
-                  ` : "" 
+                  `
+                    : ""
                 }
             </div>
 
         </form>
     `;
 
-
   // Add event listener for form submission
   const form = container.querySelector<HTMLFormElement>("#expense-form-form")!;
 
   const errorMessage =
     container.querySelector<HTMLParagraphElement>("#error-message")!;
+  const recurringCheckbox =
+    container.querySelector<HTMLInputElement>("#isRecurring")!;
+  const recurringOptions =
+    container.querySelector<HTMLElement>("#recurring-options")!;
+
+  // Show/hide recurring options based on checkbox state
+  recurringCheckbox.addEventListener("change", () => {
+    recurringOptions.classList.toggle("hidden", !recurringCheckbox.checked);
+  });
 
   form.addEventListener("submit", (e) => {
     e.preventDefault();
 
     const description = (
-      document.querySelector("#description") as HTMLInputElement
+      container.querySelector("#description") as HTMLInputElement
     ).value;
-    const category = (document.querySelector("#category") as HTMLSelectElement)
+    const category = (container.querySelector("#category") as HTMLSelectElement)
       .value;
     const amount = Number(
-      (document.querySelector("#amount") as HTMLInputElement).value,
+      (container.querySelector("#amount") as HTMLInputElement).value,
     );
-    const date = (document.querySelector("#date") as HTMLInputElement).value;
+    const date = (container.querySelector("#date") as HTMLInputElement).value;
+
+    const isRecurring = (
+      container.querySelector("#isRecurring") as HTMLInputElement
+    ).checked;
+
+    const recurringFrequency = (
+      container.querySelector("#frequency") as HTMLSelectElement
+    ).value;
 
     errorMessage.textContent = "";
 
@@ -129,6 +190,11 @@ export function renderExpenseForm(
       category: category as any,
       amount,
       date,
+
+      isRecurring,
+      recurringFrequency: isRecurring
+        ? (recurringFrequency as "Weekly" | "Monthly" | "Yearly")
+        : undefined,
     };
 
     onSaveExpense(newExpense);
@@ -136,8 +202,10 @@ export function renderExpenseForm(
     form.reset();
   });
 
-  const cancelButton = 
+  const cancelButton =
     container.querySelector<HTMLButtonElement>("#cancel-edit");
 
-  cancelButton?.addEventListener("click", () => { onCancelEdit?.(); });
+  cancelButton?.addEventListener("click", () => {
+    onCancelEdit?.();
+  });
 }

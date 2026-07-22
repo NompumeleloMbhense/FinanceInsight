@@ -6,4 +6,7 @@ export interface Expense {
   category: Category;
   amount: number;
   date: string;
+  
+  isRecurring: boolean;
+  recurringFrequency?: "Weekly" | "Monthly" | "Yearly";
 }
