@@ -41,15 +41,27 @@ export function renderExpenseList(
 
               <div>
 
-                <strong>
-                    ${highlightMatch(expense.description, searchText)}
-                </strong>
+              <strong>
+                ${highlightMatch(expense.description, searchText)}
+              </strong>
 
-                <br>
+                <div class="expense-meta">
 
-                <small>
+                  <small class="expense-category">
                     ${expense.category}
-                </small>
+                  </small>
+
+                  ${
+                    expense.isRecurring
+                      ? `
+                        <span class="recurring-badge">
+                          🔁 ${expense.recurringFrequency}
+                        </span>
+                      `
+                      : ""
+                  }
+
+                </div>
 
                 ${
                   editingExpenseId === expense.id

@@ -14,16 +14,10 @@ import {
   saveBudget as saveBudgetToStorage,
 } from "./services/StorageService";
 import { renderMonthlyReport } from "./ui/monthlyReport";
-import { generateRecurringExpenses } from "./services/RecurringExpenseService";
 
 
+const expenses = loadExpenses();
 
-const expenses: Expense[] = loadExpenses();
-const recurringExpenses = generateRecurringExpenses(expenses);
-
-expenses.push(...recurringExpenses);
-
-saveExpenses(expenses);
 let selectedCategory = "All";
 let searchText = "";
 

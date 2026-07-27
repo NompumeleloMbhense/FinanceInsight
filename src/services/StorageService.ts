@@ -1,5 +1,6 @@
 import type { Expense } from "../models/Expense";
 import type { Budget } from "../models/Budget";
+import { generateRecurringExpenses } from "./RecurringExpenseService";
 
 // Keys used to store data in localStorage
 const EXPENSES_STORAGE_KEY = "expenses";
@@ -17,11 +18,21 @@ export function saveExpenses(expenses: Expense[]): void {
 // Load the expenses from localStorage if they exist,
 // otherwise return an empty array
 export function loadExpenses(): Expense[] {
-  const json = localStorage.getItem(EXPENSES_STORAGE_KEY);
+    const json = localStorage.getItem(EXPENSES_STORAGE_KEY);
 
-  if (json === null) return [];
+    const expenses =
+        json === null
+            ? []
+            : (JSON.parse(json) as Expense[]);
 
-  return JSON.parse(json) as Expense[];
+    const recurring = generateRecurringExpenses(expenses);
+
+    if (recurring.length > 0) {
+        expenses.push(...recurring);
+        saveExpenses(expenses);
+    }
+
+    return expenses;
 }
 
 
