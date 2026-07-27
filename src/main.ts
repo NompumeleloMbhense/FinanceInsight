@@ -14,6 +14,8 @@ import {
   saveBudget as saveBudgetToStorage,
 } from "./services/StorageService";
 import { renderMonthlyReport } from "./ui/monthlyReport";
+import { getCurrentMonthExpenses } from "./analytics/currentMonth";
+
 
 
 const expenses = loadExpenses();
@@ -211,7 +213,9 @@ function updateExpenseList() {
 
 // Function to update the dashboard with the latest expenses and budget
 function updateDashboard() {
-  dashboardSection.innerHTML = renderDashboard(expenses, budget);
+  const currentMonthExpenses = getCurrentMonthExpenses(expenses);
+
+  dashboardSection.innerHTML = renderDashboard(currentMonthExpenses, budget);
 }
 
 // Function to update the budget form with the latest budget
@@ -221,7 +225,10 @@ function updateBudgetForm(): void {
 
 // Function to update the category breakdown with the latest expenses
 function updateCategoryBreakdown() {
-  renderCategoryBreakdown(categoryBreakdownSection, expenses);
+  const currentMonthExpenses = getCurrentMonthExpenses(expenses);
+
+  renderCategoryBreakdown(categoryBreakdownSection, currentMonthExpenses);
+
 }
 
 // Function to delete an expense by its id and update the UI accordingly
