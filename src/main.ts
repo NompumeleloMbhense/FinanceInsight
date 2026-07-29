@@ -15,10 +15,15 @@ import {
 } from "./services/StorageService";
 import { renderMonthlyReport } from "./ui/monthlyReport";
 import { getCurrentMonthExpenses } from "./analytics/currentMonth";
-
-
+import { generateRecurringExpenses } from "./services/RecurringExpenseService";
 
 const expenses = loadExpenses();
+
+const recurringExpenses = generateRecurringExpenses(expenses);
+
+expenses.push(...recurringExpenses);
+
+saveExpenses(expenses);
 
 let selectedCategory = "All";
 let searchText = "";
@@ -228,7 +233,6 @@ function updateCategoryBreakdown() {
   const currentMonthExpenses = getCurrentMonthExpenses(expenses);
 
   renderCategoryBreakdown(categoryBreakdownSection, currentMonthExpenses);
-
 }
 
 // Function to delete an expense by its id and update the UI accordingly
