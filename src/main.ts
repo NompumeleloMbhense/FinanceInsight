@@ -15,15 +15,18 @@ import {
 } from "./services/StorageService";
 import { renderMonthlyReport } from "./ui/monthlyReport";
 import { getCurrentMonthExpenses } from "./analytics/currentMonth";
-import { generateRecurringExpenses } from "./services/RecurringExpenseService";
+//import { generateRecurringExpenses } from "./services/RecurringExpenseService";
+import { renderCategoryChart } from "./ui/categoryChart";
+
+
 
 const expenses = loadExpenses();
 
-const recurringExpenses = generateRecurringExpenses(expenses);
+// const recurringExpenses = generateRecurringExpenses(expenses);
 
-expenses.push(...recurringExpenses);
+// expenses.push(...recurringExpenses);
 
-saveExpenses(expenses);
+//saveExpenses(expenses);
 
 let selectedCategory = "All";
 let searchText = "";
@@ -97,22 +100,25 @@ app.innerHTML = `
 
     <!-- Category Breakdown + Search -->
     <div class="two-column">
-
         <section id="category-breakdown" class="card"></section>
-
-        <section id="expense-search" class="card">
-
-            <h2>Search Expenses</h2>
-
-            <input
-                id="expense-search-input"
-                type="text"
-                placeholder="Search description..."
-            />
-
-        </section>
+        
+        <!------- Category Chart ------->
+        <section id="category-chart" class="card"></section>
 
     </div>
+
+    <section id="expense-search" class="card">
+
+      <h2>Search Expenses</h2>
+
+      <input
+          id="expense-search-input"
+          type="text"
+          placeholder="Search description..."
+      />
+
+    </section>
+
 
     <!-- Filter + Monthly Report -->
     <div class="two-column">
@@ -153,7 +159,7 @@ app.innerHTML = `
 </main>
 `;
 
-// Query the necessary sections from the DOM for later use
+// Querying the necessary sections from the DOM for later use
 const dashboardSection = document.querySelector<HTMLElement>("#dashboard")!;
 const expenseFormSection =
   document.querySelector<HTMLElement>("#expense-form")!;
@@ -170,6 +176,10 @@ const searchInput = document.querySelector<HTMLInputElement>(
 )!;
 const monthlyReportSection =
   document.querySelector<HTMLElement>("#monthly-report")!;
+const categoryChartSection = 
+  document.querySelector<HTMLElement>("#category-chart")!;
+
+
 
 // When the user changes the dropdown, remember the selected category then
 // update the expense list to show only expenses from that category
@@ -252,6 +262,17 @@ function updateMonthlyReport() {
   renderMonthlyReport(monthlyReportSection, expenses);
 }
 
+// Function to update the category chart with the latest expenses
+function updateCategoryChart(): void {
+  const currentMonthExpenses = getCurrentMonthExpenses(expenses);
+
+  renderCategoryChart(
+    categoryChartSection,
+    currentMonthExpenses,
+  );
+}
+
+
 // Function to update the expense form based on the current editingExpenseId
 function updateExpenseForm(): void {
   const expense = expenses.find((expense) => expense.id === editingExpenseId);
@@ -272,4 +293,5 @@ function refreshApp(): void {
   updateCategoryBreakdown();
   updateBudgetForm();
   updateMonthlyReport();
+  updateCategoryChart();
 }

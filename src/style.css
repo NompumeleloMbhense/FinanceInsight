@@ -288,6 +288,38 @@ button:hover {
   border-bottom: none;
 }
 
+
+/* ==========================
+   Category Chart
+========================== */
+
+.chart-container {
+  position: relative;
+  width: 100%;
+  height: 300px;
+}
+
+.chart-total {
+  margin-top: 20px;
+  padding-top: 16px;
+  text-align: center;
+  border-top: 1px solid var(--border);
+}
+
+.chart-total span {
+  display: block;
+  color: var(--text-light);
+  font-size: 0.9rem;
+  margin-bottom: 6px;
+}
+
+.chart-total strong {
+  font-size: 2rem;
+  color: var(--primary);
+}
+
+
+
 /* ==========================
    Monthly Report
 ========================== */
