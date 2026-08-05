@@ -10,8 +10,10 @@ export interface Dom {
   searchInput: HTMLInputElement;
 }
 
-export function initializeDom(): Dom {
-  return {
+export let dom: Dom;
+
+export function initializeDom(): void {
+  dom = {
     dashboard: document.querySelector<HTMLElement>("#dashboard")!,
 
     expenseForm: document.querySelector<HTMLElement>("#expense-form")!,
