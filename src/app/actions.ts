@@ -1,10 +1,15 @@
+/*
+* This file defines the actions that can be performed in the application, such 
+* as saving, editing, and deleting expenses, as well as saving the budget.
+* It also provides a function to create these actions and refresh the app 
+* state after each action is performed.
+**/
+
 import type { Expense } from "../models/Expense";
 import type { Budget } from "../models/Budget";
 import { saveBudget as saveBudgetToStorage } from "../services/StorageService";
 import { state } from "./state";
-import { refreshApp } from "./render";
 
-// Function to save a new expense or update an existing one based on the editingExpenseId
 export interface AppActions {
   saveExpense: (expense: Expense) => void;
   editExpense: (id: number) => void;
@@ -13,7 +18,6 @@ export interface AppActions {
   saveBudget: (budget: Budget) => void;
 }
 
-// Functions to be used in the main.ts file to handle actions and refresh the app state
 export function createActions(): AppActions {
   function saveExpense(expense: Expense): void {
     if (state.editingExpenseId === null) {
@@ -29,48 +33,37 @@ export function createActions(): AppActions {
 
       state.editingExpenseId = null;
     }
-
-    refreshApp(actions);
   }
 
   function editExpense(id: number): void {
     state.editingExpenseId = id;
-
-    refreshApp(actions);
   }
 
   function deleteExpense(id: number): void {
-    const index = state.expenses.findIndex((expense) => expense.id === id);
+    const index = state.expenses.findIndex(
+      (expense) => expense.id === id,
+    );
 
     if (index === -1) return;
 
     state.expenses.splice(index, 1);
-
-    refreshApp(actions);
   }
 
   function cancelEdit(): void {
     state.editingExpenseId = null;
-
-    refreshApp(actions);
   }
 
   function saveBudget(newBudget: Budget): void {
     state.budget = newBudget;
 
     saveBudgetToStorage(state.budget);
-
-    refreshApp(actions);
   }
 
-  // Object to hold the action functions
-  const actions: AppActions = {
+  return {
     saveExpense,
     editExpense,
     deleteExpense,
     cancelEdit,
     saveBudget,
   };
-
-  return actions;
 }

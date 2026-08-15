@@ -1,3 +1,11 @@
+/*
+* This file is responsible for initializing and managing the DOM elements used in the 
+* application. It defines the structure of the DOM elements and provides a function to
+* initialize them by querying the document for the required elements. 
+**/
+
+
+
 export interface Dom {
   dashboard: HTMLElement;
   expenseForm: HTMLElement;

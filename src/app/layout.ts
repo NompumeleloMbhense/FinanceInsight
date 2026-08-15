@@ -1,3 +1,8 @@
+/*
+* This file is responsible for rendering the layout of the application. It defines the
+* structure of the HTML elements and provides a function to render them into the DOM.
+**/
+
 import { categories } from "../models/Category";
 
 export function renderLayout(app: HTMLDivElement): void {

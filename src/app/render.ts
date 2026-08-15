@@ -1,5 +1,14 @@
+/*
+ * This file is responsible for rendering the application based on the
+ * current state.
+ *
+ * It coordinates the different UI components and ensures that the
+ * interface reflects the latest application state.
+ */
+
 import { state } from "./state";
 import { dom } from "./dom";
+import type { AppActions } from "./actions";
 
 import { saveExpenses } from "../services/StorageService";
 
@@ -13,28 +22,19 @@ import { renderMonthlyReport } from "../ui/monthlyReport";
 
 import { getCurrentMonthExpenses } from "../analytics/currentMonth";
 
-import type { Expense } from "../models/Expense";
-import type { Budget } from "../models/Budget";
 
-interface RenderCallbacks {
-  saveExpense: (expense: Expense) => void;
-  editExpense: (id: number) => void;
-  deleteExpense: (id: number) => void;
-  cancelEdit: () => void;
-  saveBudget: (budget: Budget) => void;
-}
-
-export function refreshApp(callbacks: RenderCallbacks): void {
+export function refreshApp(actions: AppActions): void {
   saveExpenses(state.expenses);
 
   updateDashboard();
-  updateExpenseForm(callbacks);
-  updateExpenseList(callbacks);
+  updateExpenseForm(actions);
+  updateExpenseList(actions);
   updateCategoryBreakdown();
-  updateBudgetForm(callbacks);
+  updateBudgetForm(actions);
   updateMonthlyReport();
   updateCategoryChart();
 }
+
 
 function updateDashboard(): void {
   const currentMonthExpenses =
@@ -46,37 +46,32 @@ function updateDashboard(): void {
   );
 }
 
-function updateBudgetForm(
-  callbacks: RenderCallbacks,
-): void {
+
+function updateBudgetForm(actions: AppActions): void {
   renderBudgetForm(
     dom.budgetForm,
     state.budget,
-    callbacks.saveBudget,
+    actions.saveBudget,
   );
 }
 
-function updateExpenseForm(
-  callbacks: RenderCallbacks,
-): void {
+
+function updateExpenseForm(actions: AppActions): void {
   const expense = state.expenses.find(
     expense => expense.id === state.editingExpenseId,
   );
 
   renderExpenseForm(
     dom.expenseForm,
-    callbacks.saveExpense,
+    actions.saveExpense,
     expense,
-    callbacks.cancelEdit,
+    actions.cancelEdit,
   );
 }
 
-function updateExpenseList(
-  callbacks: RenderCallbacks,
-): void {
 
+function updateExpenseList(actions: AppActions): void {
   const filteredExpenses = state.expenses.filter(expense => {
-
     const matchesCategory =
       state.selectedCategory === "All" ||
       expense.category === state.selectedCategory;
@@ -87,7 +82,6 @@ function updateExpenseList(
         .includes(state.searchText.toLowerCase());
 
     return matchesCategory && matchesSearch;
-
   });
 
   const emptyMessage =
@@ -98,16 +92,16 @@ function updateExpenseList(
   renderExpenseList(
     dom.expenseList,
     filteredExpenses,
-    callbacks.editExpense,
-    callbacks.deleteExpense,
+    actions.editExpense,
+    actions.deleteExpense,
     state.editingExpenseId,
     emptyMessage,
     state.searchText,
   );
 }
 
-function updateCategoryBreakdown(): void {
 
+function updateCategoryBreakdown(): void {
   const currentMonthExpenses =
     getCurrentMonthExpenses(state.expenses);
 
@@ -117,8 +111,8 @@ function updateCategoryBreakdown(): void {
   );
 }
 
-function updateCategoryChart(): void {
 
+function updateCategoryChart(): void {
   const currentMonthExpenses =
     getCurrentMonthExpenses(state.expenses);
 
@@ -127,6 +121,7 @@ function updateCategoryChart(): void {
     currentMonthExpenses,
   );
 }
+
 
 function updateMonthlyReport(): void {
   renderMonthlyReport(
