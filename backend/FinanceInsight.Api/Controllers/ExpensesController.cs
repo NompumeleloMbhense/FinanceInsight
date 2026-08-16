@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using FinanceInsight.Api.Models;
 
 namespace FinanceInsight.Api.Controllers;
 
@@ -6,9 +7,19 @@ namespace FinanceInsight.Api.Controllers;
 [Route("api/[controller]")]
 public class ExpensesController : ControllerBase
 {
+
     [HttpGet]
     public IActionResult GetExpenses()
     {
-        return Ok("Expenses endpoint is working!");
+        var expense = new Expense
+        {
+            Id = Guid.NewGuid(),
+            Description = "Netflix",
+            Amount = 199.00m,
+            Category = "Entertainment",
+            Date = new DateTime(2026, 8, 31)
+        };
+
+        return Ok(expense);
     }
 }
