@@ -11,4 +11,11 @@ public class FinanceDbContext : DbContext
     }
 
     public DbSet<Expense> Expenses { get; set; }
+
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    {
+        modelBuilder.Entity<Expense>()
+            .Property(e => e.Amount)
+            .HasPrecision(18, 2);
+    }
 }
