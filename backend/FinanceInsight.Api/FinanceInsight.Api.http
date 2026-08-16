@@ -1,0 +1,6 @@
+@FinanceInsight.Api_HostAddress = http://localhost:5156
+
+GET {{FinanceInsight.Api_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

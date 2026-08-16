@@ -5,7 +5,7 @@
 **/
 
 
-
+// Define the structure of the DOM elements used in the application
 export interface Dom {
   dashboard: HTMLElement;
   expenseForm: HTMLElement;
@@ -20,6 +20,8 @@ export interface Dom {
 
 export let dom: Dom;
 
+
+// Initialize the DOM elements by querying the document for the required elements
 export function initializeDom(): void {
   dom = {
     dashboard: document.querySelector<HTMLElement>("#dashboard")!,
