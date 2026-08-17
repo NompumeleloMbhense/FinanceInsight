@@ -1,5 +1,8 @@
 using Microsoft.AspNetCore.Mvc;
 using FinanceInsight.Api.Models;
+using FinanceInsight.Api.Data;
+using Microsoft.EntityFrameworkCore;
+using FinanceInsight.Api.DTOs;
 
 namespace FinanceInsight.Api.Controllers;
 
@@ -7,19 +10,38 @@ namespace FinanceInsight.Api.Controllers;
 [Route("api/[controller]")]
 public class ExpensesController : ControllerBase
 {
+    private readonly FinanceDbContext _context;
+    public ExpensesController(FinanceDbContext context)
+    {
+        _context = context;
+    }
 
     [HttpGet]
-    public IActionResult GetExpenses()
+    public async Task<IActionResult> GetExpenses()
+    {
+        var expenses = await _context.Expenses.ToListAsync();
+
+        return Ok(expenses);
+    }
+
+    [HttpPost]
+    public async Task<IActionResult> CreateExpense(CreateExpenseDto dto)
     {
         var expense = new Expense
         {
             Id = Guid.NewGuid(),
-            Description = "Netflix",
-            Amount = 199.00m,
-            Category = "Entertainment",
-            Date = new DateTime(2026, 8, 31)
+            Description = dto.Description,
+            Amount = dto.Amount,
+            Category = dto.Category,
+            Date = dto.Date
         };
 
-        return Ok(expense);
+        _context.Expenses.Add(expense);
+        await _context.SaveChangesAsync();
+
+        return CreatedAtAction(
+            nameof(GetExpenses),
+            new { id = expense.Id },
+            expense);
     }
 }
