@@ -44,4 +44,38 @@ public class ExpensesController : ControllerBase
             new { id = expense.Id },
             expense);
     }
+
+    [HttpPut("{id:guid}")]
+    public async Task<IActionResult> UpdateExpense(Guid id, UpdateExpenseDto dto)
+    {
+        var expense = await _context.Expenses.FindAsync(id);
+
+        if (expense is null)
+            return NotFound();
+
+        expense.Description = dto.Description;
+        expense.Amount = dto.Amount;
+        expense.Category = dto.Category;
+        expense.Date = dto.Date;
+
+        await _context.SaveChangesAsync();
+
+        return NoContent();
+    }
+
+
+    [HttpDelete("{id:guid}")]
+    public async Task<IActionResult> DeleteExpense(Guid id)
+    {
+        var expense = await _context.Expenses.FindAsync(id);
+
+        if (expense is null)
+            return NotFound();
+
+        _context.Expenses.Remove(expense);
+
+        await _context.SaveChangesAsync();
+
+        return NoContent();
+    }
 }

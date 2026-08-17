@@ -2,7 +2,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace FinanceInsight.Api.DTOs;
 
-public class CreateExpenseDto
+public class UpdateExpenseDto
 {
     [Required]
     public string Description { get; set; } = string.Empty;
